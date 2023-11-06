@@ -17,7 +17,9 @@ float vertices[] = {
         // tri 1
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f,
+        0.0f,  0.5f, 0.0f
+};
+float vertices2[] = {
         // tri 2
         0.5f, -0.5f, 0.0f,
         1.0f, -0.5f, 0.0f,
@@ -36,6 +38,13 @@ const char *fragmentShaderSource = "#version 330 core\n"
                                    "void main()\n"
                                    "{\n"
                                    "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+                                   "}";
+const char *fragmentShaderSourceYellow = "#version 330 core\n"
+                                   "out vec4 FragColor;\n"
+                                   "\n"
+                                   "void main()\n"
+                                   "{\n"
+                                   "    FragColor = vec4(1.0f, 1.0f, 0.2f, 1.0f);\n"
                                    "}";
 
 
@@ -83,12 +92,24 @@ int main() {
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-
     // create vertex buffer object from 'vertices[]'
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    // set the vertex attribute pointers
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // create our vertex array object
+    GLuint VAO2;
+    glGenVertexArrays(1, &VAO2);
+    glBindVertexArray(VAO2);
+    // create vertex buffer object from 'vertices[]'
+    GLuint VBO2;
+    glGenBuffers(1, &VBO2);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
     // set the vertex attribute pointers
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -112,6 +133,15 @@ int main() {
         return -1;
     }
 
+    // compile fragment shader yellow
+    GLuint fragmentShaderYellow;
+    fragmentShaderYellow = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShaderYellow, 1, &fragmentShaderSourceYellow, NULL);
+    glCompileShader(fragmentShaderYellow);
+    if (!checkShaderCompile(fragmentShaderYellow)) {
+        return -1;
+    }
+
     // create shader program
     GLuint shaderProgram;
     shaderProgram = glCreateProgram();
@@ -119,6 +149,16 @@ int main() {
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
     if (!checkShaderProgramCompile(shaderProgram)) {
+        return -1;
+    }
+
+    // create shader program yellow
+    GLuint shaderProgramYellow;
+    shaderProgramYellow = glCreateProgram();
+    glAttachShader(shaderProgramYellow, vertexShader);
+    glAttachShader(shaderProgramYellow, fragmentShaderYellow);
+    glLinkProgram(shaderProgramYellow);
+    if (!checkShaderProgramCompile(shaderProgramYellow)) {
         return -1;
     }
 
@@ -176,9 +216,15 @@ int main() {
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // tri 1
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        // tri 2
+        glUseProgram(shaderProgramYellow);
+        glBindVertexArray(VAO2);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         SDL_GL_SwapWindow(Window);
     }

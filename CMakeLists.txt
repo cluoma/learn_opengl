@@ -14,5 +14,6 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 # Hello Triangle
 add_executable(helloTriangle src/1GettingStarted/helloTriangle.cpp src/glad.c)
 target_link_libraries(helloTriangle ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
-
-
+# Hello Triangle Exercise
+add_executable(helloTriangleExercise src/1GettingStarted/helloTriangleExercise.cpp src/glad.c)
+target_link_libraries(helloTriangleExercise ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
