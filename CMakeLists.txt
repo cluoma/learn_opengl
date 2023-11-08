@@ -11,9 +11,13 @@ include_directories(${SDL2_INCLUDE_DIRS})
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
+## 1.Getting Started
 # Hello Triangle
 add_executable(helloTriangle src/1GettingStarted/helloTriangle.cpp src/glad.c)
 target_link_libraries(helloTriangle ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 # Hello Triangle Exercise
 add_executable(helloTriangleExercise src/1GettingStarted/helloTriangleExercise.cpp src/glad.c)
 target_link_libraries(helloTriangleExercise ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Shaders
+add_executable(shaders src/1GettingStarted/shaders.cpp src/glad.c)
+target_link_libraries(shaders ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
