@@ -3,11 +3,10 @@ project(learnOGL)
 
 set(CMAKE_CXX_STANDARD 23)
 
-include_directories(include)
+include_directories(include .)
 
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
-
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
@@ -21,3 +20,7 @@ target_link_libraries(helloTriangleExercise ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES
 # Shaders
 add_executable(shaders src/1GettingStarted/shaders.cpp src/glad.c)
 target_link_libraries(shaders ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Shaders Exercise
+add_executable(shadersExercise src/1GettingStarted/shadersExercise.cpp src/glad.c
+        src/shader.h)
+target_link_libraries(shadersExercise ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
