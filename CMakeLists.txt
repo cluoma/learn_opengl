@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 23)
 
 include_directories(include .)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 find_package(OpenGL REQUIRED)
@@ -24,3 +26,8 @@ target_link_libraries(shaders ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(shadersExercise src/1GettingStarted/shadersExercise.cpp src/glad.c
         src/shader.h)
 target_link_libraries(shadersExercise ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+
+
+add_executable(textures src/1GettingStarted/Textures/textures.cpp  src/glad.c
+        src/shader.h src/stb_image.cpp)
+target_link_libraries(textures ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
