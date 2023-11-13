@@ -155,6 +155,11 @@ int main() {
     // render loop
     int32_t Running = 1;
     int32_t FullScreen = 0;
+
+    bool rotateClockwise = true;
+    float curRotation = 0.0f;
+    float lastTicks = (float)SDL_GetTicks()/1000;
+
     while (Running)
     {
         SDL_Event Event;
@@ -177,6 +182,12 @@ int main() {
                         {
                             SDL_SetWindowFullscreen(Window, WindowFlags);
                         }
+                        break;
+                    case SDLK_LEFT:
+                        rotateClockwise = false;
+                        break;
+                    case SDLK_RIGHT:
+                        rotateClockwise = true;
                         break;
                     default:
                         break;
@@ -212,8 +223,16 @@ int main() {
         // transformations
         myShader.setMat4F("transform", 1, GL_FALSE, glm::value_ptr(trans));  // the shrink and rotate one
         glm::mat4 trans2 = glm::mat4(1.0f);
+        trans2 = glm::scale(trans2, glm::vec3(1.0f, 640.0f/480.0f, 1.0f));
         trans2 = glm::translate(trans2, glm::vec3(0.5f, -0.5f, 0.0f));
-        trans2 = glm::rotate(trans2, (float)SDL_GetTicks()/1000, glm::vec3(0.0f, 0.0f, 1.0f));
+        float diff = (float)SDL_GetTicks() - lastTicks;
+        lastTicks = (float)SDL_GetTicks();
+        if (rotateClockwise)
+            curRotation = remainder(curRotation - diff/1000, 2*3.141592);
+        else
+            curRotation = remainder(curRotation + diff/1000, 2*3.141592);
+        std::cout << curRotation << std::endl;
+        trans2 = glm::rotate(trans2, curRotation, glm::vec3(0.0f, 0.0f, 1.0f));
         myShader.setMat4F("transform", 1, GL_FALSE, glm::value_ptr(trans2));
 
         glBindVertexArray(VAO);
