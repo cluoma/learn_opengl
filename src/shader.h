@@ -94,6 +94,10 @@ public:
     {
         glUniform1f(glGetUniformLocation(id, name.c_str()), value);
     }
+    void setMat4F(const std::string &name, GLsizei count, GLboolean transpose, const GLfloat * value) const
+    {
+        glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), count, transpose, value);
+    }
 
 private:
     enum compileStep {

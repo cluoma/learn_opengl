@@ -31,3 +31,7 @@ target_link_libraries(shadersExercise ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(textures src/1GettingStarted/Textures/textures.cpp  src/glad.c
         src/shader.h src/stb_image.cpp)
 target_link_libraries(textures ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+
+add_executable(transformations src/1GettingStarted/Transformations/transformations.cpp src/glad.c
+        src/shader.h src/stb_image.cpp)
+target_link_libraries(transformations ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
