@@ -40,3 +40,7 @@ target_link_libraries(transformations ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(coord_systems src/1GettingStarted/CoordSystems/coordSystems.cpp src/glad.c
         src/shader.h src/stb_image.cpp)
 target_link_libraries(coord_systems ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Camera
+add_executable(camera src/1GettingStarted/Camera/camera.cpp src/glad.c
+        src/shader.h src/stb_image.cpp)
+target_link_libraries(camera ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
