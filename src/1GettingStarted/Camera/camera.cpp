@@ -14,8 +14,8 @@
 
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+int SCREEN_WIDTH = 640;
+int SCREEN_HEIGHT = 480;
 
 float vertices[] = {
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -83,6 +83,9 @@ glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+float cameraSensitivity = 0.1f;
+float yaw = -90.0f;
+float pitch = 0.0f;
 
 
 int main() {
@@ -106,6 +109,8 @@ int main() {
             SCREEN_WIDTH, SCREEN_HEIGHT,
             WindowFlags
     );
+    // SDL_SetWindowMouseGrab(Window, SDL_TRUE);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 
     // init GL context
     SDL_GLContext Context = SDL_GL_CreateContext(Window);
@@ -257,8 +262,9 @@ int main() {
 
 
     // projection
+    float fov = 90.0f;
     glm::mat4 projection;
-    projection = glm::perspective(glm::radians(90.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(fov), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
 
     // render loop
@@ -291,7 +297,6 @@ int main() {
             cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
         if (keystate[SDL_SCANCODE_D])
             cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
         // SDL single events
         SDL_Event Event;
@@ -319,11 +324,50 @@ int main() {
                         break;
                 }
             }
+            else if (Event.type == SDL_MOUSEBUTTONDOWN)
+            {
+                switch (Event.button.button)
+                {
+                    case SDL_BUTTON_RIGHT:
+                        if (SDL_GetRelativeMouseMode() == SDL_TRUE)
+                            SDL_SetRelativeMouseMode(SDL_FALSE);
+                        else
+                            SDL_SetRelativeMouseMode(SDL_TRUE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else if (Event.type == SDL_MOUSEMOTION && SDL_GetRelativeMouseMode() == SDL_TRUE)
+            {
+                yaw += static_cast<float>(Event.motion.xrel) * cameraSensitivity;
+                pitch += static_cast<float>(Event.motion.yrel) * cameraSensitivity * (-1);
+                if (pitch > 89.0f)
+                    pitch = 89.0f;
+                if (pitch < -89.0f)
+                    pitch = -89.f;
+
+                glm::vec3 direction;
+                direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+                direction.y = sin(glm::radians(pitch));
+                direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+                cameraFront = glm::normalize(direction);
+            }
+            else if (Event.type == SDL_MOUSEWHEEL && SDL_GetRelativeMouseMode() == SDL_TRUE)
+            {
+                fov -= static_cast<float>(Event.wheel.y) * 5;
+                if (fov < 1.0f)
+                    fov = 1.0f;
+                if (fov >= 90.0f)
+                    fov = 90.f;
+            }
             else if (Event.type == SDL_WINDOWEVENT)
             {
                 if(Event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                     std::cout << "window resized: [" << Event.window.data1 << ", " << Event.window.data2 << "]" << std::endl;
-                    glViewport(0, 0, Event.window.data1, Event.window.data2);
+                    SCREEN_WIDTH = Event.window.data1;
+                    SCREEN_HEIGHT = Event.window.data2;
+                    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
                 }
             }
             else if (Event.type == SDL_QUIT)
@@ -331,6 +375,11 @@ int main() {
                 Running = 0;
             }
         }
+
+        // Update camera view matrix
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        // Update camera projection matrix
+        projection = glm::perspective(glm::radians(fov), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
