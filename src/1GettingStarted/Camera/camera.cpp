@@ -79,6 +79,12 @@ glm::vec3 cubePositions[] = {
     glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+
 int main() {
 
     // code without checking for errors
@@ -209,38 +215,41 @@ int main() {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
+    // --------------------
     // CAMERA
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
-    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-    glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
-
-    glm::mat4 view =
-    {
-        cameraRight.x, cameraRight.y, cameraRight.z, 0.0f,
-        cameraUp.x, cameraUp.y, cameraUp.z, 0.0f,
-        cameraDirection.x, cameraDirection.y, cameraDirection.z, 0.0f,
-        0.0f, 0.0f, 0.0f, 1.0f
-    };
-    glm::mat4 viewPos =
-    {
-        1.0, 0.0f, 0.0f, (-1)*cameraPos.x,
-        0.0, 1.0f, 0.0f, (-1)*cameraPos.y,
-        0.0, 0.0f, 1.0f, (-1)*cameraPos.z,
-        0.0, 0.0f, 0.0f, 1.0f
-    };
-    std::cout << glm::to_string(view) << std::endl;
-    std::cout << glm::to_string(viewPos) << std::endl;
-    view = glm::transpose(view) * glm::transpose(viewPos);
-    std::cout << "Right: " << glm::to_string(cameraRight) << std::endl;
-    std::cout << "Up: " << glm::to_string(cameraUp) << std::endl;
-    std::cout << "Direction: " << glm::to_string(cameraDirection) << std::endl;
-    std::cout << "Position: " << glm::to_string(cameraPos) << std::endl;
-    std::cout << glm::to_string(view) << std::endl;
-    // the easy way
-    // view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
+    // glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+    // glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+    // glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+    // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+    // glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+    // glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+    // ---------------------
+    // THE HARD WAY
+    // glm::mat4 view =
+    // {
+    //     cameraRight.x, cameraRight.y, cameraRight.z, 0.0f,
+    //     cameraUp.x, cameraUp.y, cameraUp.z, 0.0f,
+    //     cameraDirection.x, cameraDirection.y, cameraDirection.z, 0.0f,
+    //     0.0f, 0.0f, 0.0f, 1.0f
+    // };
+    // glm::mat4 viewPos =
+    // {
+    //     1.0, 0.0f, 0.0f, (-1)*cameraPos.x,
+    //     0.0, 1.0f, 0.0f, (-1)*cameraPos.y,
+    //     0.0, 0.0f, 1.0f, (-1)*cameraPos.z,
+    //     0.0, 0.0f, 0.0f, 1.0f
+    // };
+    // std::cout << glm::to_string(view) << std::endl;
+    // std::cout << glm::to_string(viewPos) << std::endl;
+    // view = glm::transpose(view) * glm::transpose(viewPos);
+    // std::cout << "Right: " << glm::to_string(cameraRight) << std::endl;
+    // std::cout << "Up: " << glm::to_string(cameraUp) << std::endl;
+    // std::cout << "Direction: " << glm::to_string(cameraDirection) << std::endl;
+    // std::cout << "Position: " << glm::to_string(cameraPos) << std::endl;
+    // std::cout << glm::to_string(view) << std::endl;
+    // ---------------------------------
+    // THE EASY WAY
+    // glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
     //                     glm::vec3(0.0f, 0.0f, 0.0f),
     //                     glm::vec3(0.0f, 1.0f, 0.0f));
     // std::cout << glm::to_string(view) << std::endl;
@@ -260,8 +269,31 @@ int main() {
     float curRotation = 0.0f;
     float lastTicks = (float)SDL_GetTicks()/1000;
 
+    float deltaTime = 0.0f;
+    float lastFrame = (float)SDL_GetTicks()/1000.0f;
+
     while (Running)
     {
+        // update frame delta
+        float currentFrame = (float)SDL_GetTicks()/1000.0f;
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        // continuous key state
+        const Uint8 * keystate = SDL_GetKeyboardState(nullptr);
+        const float cameraSpeed = 5.0f * deltaTime;
+        SDL_PumpEvents();
+        if (keystate[SDL_SCANCODE_W])
+            cameraPos += cameraSpeed * cameraFront;
+        if (keystate[SDL_SCANCODE_S])
+            cameraPos -= cameraSpeed * cameraFront;
+        if (keystate[SDL_SCANCODE_A])
+            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        if (keystate[SDL_SCANCODE_D])
+            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+        // SDL single events
         SDL_Event Event;
         while (SDL_PollEvent(&Event))
         {
@@ -282,18 +314,6 @@ int main() {
                         {
                             SDL_SetWindowFullscreen(Window, WindowFlags);
                         }
-                        break;
-                    case SDLK_UP:
-                        view = glm::translate(view, glm::vec3(0, 0, 0.1));
-                        break;
-                    case SDLK_DOWN:
-                        view = glm::translate(view, glm::vec3(0, 0, -0.1));
-                        break;
-                    case SDLK_LEFT:
-                        view = glm::translate(view, glm::vec3(0.1, 0, 0));
-                        break;
-                    case SDLK_RIGHT:
-                        view = glm::translate(view, glm::vec3(-0.1, 0, 0));
                         break;
                     default:
                         break;
