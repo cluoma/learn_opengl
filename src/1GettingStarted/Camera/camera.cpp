@@ -474,9 +474,12 @@ int main() {
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
+        // Draw the grassy floor
         glBindVertexArray(VAO_floor);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureGrass);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, NULL);
         myShader.use();
         glm::mat4 m2 = glm::mat4(1.0f);
         m2 = glm::scale(m2, glm::vec3(100.0f, 100.0f, 100.0f));
