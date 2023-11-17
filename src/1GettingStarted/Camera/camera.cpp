@@ -12,6 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+glm::mat4 customLookAt(glm::vec3 & pos, const glm::vec3 & front, glm::vec3 & up);
 
 //Screen dimension constants
 int SCREEN_WIDTH = 640;
@@ -79,7 +80,17 @@ glm::vec3 cubePositions[] = {
     glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
-glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
+float floorVertices[] = {
+    // vertices             // text coord
+    -0.5f, 0.0f, -0.5f,     -1.0f, -1.0f,
+    -0.5f, 0.0f, 0.5f,      -1.0f, 1.0f,
+    0.5f, 0.0f, 0.5f,       1.0f, 1.0f,
+    0.5f, 0.0f, 0.5f,       1.0f, 1.0f,
+    -0.5f, 0.0f, -0.5f,     -1.0f, -1.0f,
+    0.5f, 0.0f, -0.5f,      1.0f, -1.0f
+};
+
+glm::vec3 cameraPos   = glm::vec3(0.0f, 2.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
@@ -154,13 +165,24 @@ int main() {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
+    GLuint VAO_floor, VBO_floor;
+    glGenVertexArrays(1, &VAO_floor);
+    glGenBuffers(1, &VBO_floor);
+    glBindVertexArray(VAO_floor);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_floor);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floorVertices), floorVertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+    glBindVertexArray(VAO);
 
     // compile shaders
     Shader myShader = Shader(
             "src/1GettingStarted/Camera/vertex.vert",
             "src/1GettingStarted/Camera/fragment.frag");
     myShader.use();
-
 
     // gl load texture
     unsigned int texture[2];
@@ -207,6 +229,33 @@ int main() {
     {
         std::cout << "Failed to load texture!" << std::endl;
     }
+    // Texture 3 - GRASS
+    glBindVertexArray(VAO_floor);
+    unsigned int textureGrass;
+    glGenTextures(1, &textureGrass);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureGrass);
+    // set texture wrapping/filtering options
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // image load texture
+    data = stbi_load("assets/textures/grass.jpg", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        std::cout << "pic: [" << width << ", " << height << "]" << std::endl;
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Failed to load texture!" << std::endl;
+    }
+
+    // return to default VAO
+    glBindVertexArray(VAO);
 
 
     // matrix transformations
@@ -290,9 +339,9 @@ int main() {
         const float cameraSpeed = 5.0f * deltaTime;
         SDL_PumpEvents();
         if (keystate[SDL_SCANCODE_W])
-            cameraPos += cameraSpeed * cameraFront;
+            cameraPos += cameraSpeed * glm::normalize(glm::vec3(cameraFront.x, 0.0f, cameraFront.z));
         if (keystate[SDL_SCANCODE_S])
-            cameraPos -= cameraSpeed * cameraFront;
+            cameraPos -= cameraSpeed * glm::normalize(glm::vec3(cameraFront.x, 0.0f, cameraFront.z));
         if (keystate[SDL_SCANCODE_A])
             cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
         if (keystate[SDL_SCANCODE_D])
@@ -377,7 +426,8 @@ int main() {
         }
 
         // Update camera view matrix
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        //view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        view = customLookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         // Update camera projection matrix
         projection = glm::perspective(glm::radians(fov), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
@@ -396,10 +446,8 @@ int main() {
         myShader.setInt("texture2", 1);
 
         // transformations
-        myShader.setMat4F("transform", 1, GL_FALSE, glm::value_ptr(trans));  // the shrink and rotate one
+        myShader.setMat4F("transform", 1, GL_FALSE, glm::value_ptr(trans));
         glm::mat4 trans2 = glm::mat4(1.0f);
-        //trans2 = glm::scale(trans2, glm::vec3(1.0f, 640.0f/480.0f, 1.0f));
-        //trans2 = glm::translate(trans2, glm::vec3(0.5f, -0.5f, 0.0f));
         float diff = (float)SDL_GetTicks() - lastTicks;
         lastTicks = (float)SDL_GetTicks();
         if (rotateClockwise)
@@ -426,6 +474,18 @@ int main() {
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
+        glBindVertexArray(VAO_floor);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureGrass);
+        myShader.use();
+        glm::mat4 m2 = glm::mat4(1.0f);
+        m2 = glm::scale(m2, glm::vec3(100.0f, 100.0f, 100.0f));
+        myShader.setMat4F("model", 1, GL_FALSE, glm::value_ptr(m2));
+        myShader.setMat4F("view", 1, GL_FALSE, glm::value_ptr(view));
+        myShader.setMat4F("projection", 1, GL_FALSE, glm::value_ptr(projection));
+        myShader.setMat4F("transform", 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
         SDL_GL_SwapWindow(Window);
     }
 
@@ -440,3 +500,36 @@ int main() {
     return 0;
 }
 
+glm::mat4 customLookAt(glm::vec3 & pos, const glm::vec3 & direction, glm::vec3 & up)
+{
+    glm::vec3 cameraPos = pos;
+    glm::vec3 cameraTarget = direction;
+    glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+    glm::vec3 cameraUp = up;
+    glm::vec3 cameraRight = glm::normalize(glm::cross(cameraUp, cameraDirection));
+    cameraUp = glm::cross(cameraDirection, cameraRight);
+
+    glm::mat4 view =
+    {
+        cameraRight.x, cameraRight.y, cameraRight.z, 0.0f,
+        cameraUp.x, cameraUp.y, cameraUp.z, 0.0f,
+        cameraDirection.x, cameraDirection.y, cameraDirection.z, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
+    glm::mat4 viewPos =
+    {
+        1.0, 0.0f, 0.0f, (-1)*cameraPos.x,
+        0.0, 1.0f, 0.0f, (-1)*cameraPos.y,
+        0.0, 0.0f, 1.0f, (-1)*cameraPos.z,
+        0.0, 0.0f, 0.0f, 1.0f
+    };
+    // std::cout << glm::to_string(view) << std::endl;
+    // std::cout << glm::to_string(viewPos) << std::endl;
+    view = glm::transpose(view) * glm::transpose(viewPos);
+    // std::cout << "Right: " << glm::to_string(cameraRight) << std::endl;
+    // std::cout << "Up: " << glm::to_string(cameraUp) << std::endl;
+    // std::cout << "Direction: " << glm::to_string(cameraDirection) << std::endl;
+    // std::cout << "Position: " << glm::to_string(cameraPos) << std::endl;
+    // std::cout << glm::to_string(view) << std::endl;
+    return view;
+}
