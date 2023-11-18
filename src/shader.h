@@ -94,9 +94,17 @@ public:
     {
         glUniform1f(glGetUniformLocation(id, name.c_str()), value);
     }
+    void setVec3(const std::string &name, const float x, const float y, const float z) const
+    {
+        glUniform3f(glGetUniformLocation(id, name.c_str()), x, y, z);
+    }
     void setMat4F(const std::string &name, GLsizei count, GLboolean transpose, const GLfloat * value) const
     {
         glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), count, transpose, value);
+    }
+    void setMat4(const std::string &name, const GLfloat * value) const
+    {
+        setMat4F(name, 1, GL_FALSE, value);
     }
 
 private:

@@ -44,3 +44,10 @@ target_link_libraries(coord_systems ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(camera src/1GettingStarted/Camera/camera.cpp src/glad.c
         src/shader.h src/stb_image.cpp)
 target_link_libraries(camera ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+
+########################################
+## 2. Lighting
+########################################
+add_executable(colors src/2Lighting/Colors/colors.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(colors ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
