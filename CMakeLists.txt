@@ -48,6 +48,11 @@ target_link_libraries(camera ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 ########################################
 ## 2. Lighting
 ########################################
+# Colors
 add_executable(colors src/2Lighting/Colors/colors.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(colors ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Basic Lighting
+add_executable(basic_lighting src/2Lighting/BasicLighting/basicLighting.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(basic_lighting ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
