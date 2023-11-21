@@ -60,4 +60,10 @@ target_link_libraries(basic_lighting ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(materials src/2Lighting/Materials/materials.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(materials ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Sphere Experiment
+add_executable(sphere_experiment src/2Lighting/SphereExperiment/sphereExperiemt.cpp
+        src/2Lighting/SphereExperiment/sphere.cpp
+        src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(sphere_experiment ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 
