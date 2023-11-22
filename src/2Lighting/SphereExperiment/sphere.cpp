@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <glm/gtx/string_cast.hpp>
+#include <glm/gtx/normal.hpp>
 
 #define PI 3.1415962f
 
@@ -59,35 +60,92 @@ Sphere::Sphere(int latSegs, int lonSegs)
     std::cout << v_.size() << std::endl;
 
     // build indices vector
-    for (int i = 1; i < (v_.size() - (3*lonSegs + 6))/3; i++)
+    // for (unsigned int i = 1; i < (v_.size() - (3*lonSegs + 6))/3; i++)
+    // {
+    //     // first tri
+    //     i_.push_back(i);
+    //     i_.push_back(i + lonSegs);
+    //     i_.push_back(i + lonSegs + 1);
+    //     // second tri
+    //     i_.push_back(i);
+    //     i_.push_back(i + 1);
+    //     i_.push_back(i + lonSegs + 1);
+    // }
+
+    int s1, s2, k1, k2;
+    for(int i = 0; i < latSegs-2; i++)
     {
-        // first tri
-        i_.push_back(i);
-        i_.push_back(i + lonSegs);
-        i_.push_back(i + lonSegs + 1);
-        // second tri
-        i_.push_back(i);
-        i_.push_back(i + 1);
-        i_.push_back(i + lonSegs + 1);
+        // beginning of current stack
+        s1 = i * (lonSegs) + 1;
+        k1 = s1;
+        // beginning of next stack
+        s2 = k1 + lonSegs;
+        k2 = s2;
+        printf("k1: %d, k2: %d\n", k1, k2);
+
+        for(int j = 0; j < lonSegs; j++, k1++, k2++)
+        {
+            // 2 triangles per sector excluding first and last stacks
+            // k1 => k2 => k1+1
+            int k1_next = k1 + 1;
+            int k2_next = k2 + 1;
+            if (j == lonSegs - 1)
+            {
+                k1_next = s1;
+                k2_next = s2;
+            }
+                i_.push_back(k1);
+                i_.push_back(k2);
+                i_.push_back(k2_next);
+
+            // k1+1 => k2 => k2+1
+                i_.push_back(k1);
+                i_.push_back(k1_next);
+                i_.push_back(k2_next);
+        }
     }
 
     std::cout << "Indices" << std::endl;
-    for (int i = 0; i < i_.size(); i++)
+    for (unsigned int i : i_)
     {
-        std::cout << i_.at(i) << std::endl;
+        std::cout << i << std::endl;
     }
 
     std::cout << i_.size() << std::endl;
 }
 
-std::vector<float> & Sphere::get_vertices()
+const std::vector<float> & Sphere::get_vertices()
 {
     return v_;
 }
 
-std::vector<int> & Sphere::get_indices()
+const std::vector<unsigned int> & Sphere::get_indices()
 {
     return i_;
 }
 
-
+std::vector<float> Sphere::get_vertex_attribs()
+{
+    std::vector<float> a_;
+    for (int i = 0; i < i_.size(); i+=3)
+    {
+        // normals
+        glm::vec3 norm = glm::triangleNormal(
+            glm::vec3(v_.at(i*3), v_.at(i*3+1), v_.at(i*3+2)),
+            glm::vec3(v_.at((i+1)*3), v_.at((i+1)*3+1), v_.at((i+1)*3+2)),
+            glm::vec3(v_.at((i+2)*3), v_.at((i+2)*3+1), v_.at((i+2)*3+2))
+            );
+        for (int j = 0; j < 3; j++)
+        {
+            // position
+            a_.push_back(v_.at((i+j)*3));
+            a_.push_back(v_.at((i+j)*3+1));
+            a_.push_back(v_.at((i+j)*3+2));
+            // normal
+            a_.push_back(norm.x);
+            a_.push_back(norm.y);
+            a_.push_back(norm.z);
+        }
+    }
+    return a_;
+}

@@ -11,12 +11,15 @@
 class Sphere {
 public:
     Sphere(int latSegs, int lonSegs);
-    std::vector<float> & get_vertices();
-    std::vector<int> & get_indices();
+    const std::vector<float> & get_vertices();
+    const std::vector<unsigned int> & get_indices();
+    std::vector<float> get_vertex_attribs();
 private:
+    // vertex attributes
     std::vector<float> v_;
-    std::vector<int> i_;
-    std::vector<glm::vec3> n_;
+    std::vector<float> n_;
+    // indices
+    std::vector<unsigned int> i_;
 };
 
 

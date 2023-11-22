@@ -67,10 +67,9 @@ Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 // lighting
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-
 int main() {
 
-    Sphere mysphere(5, 5);
+    Sphere mysphere(100, 100);
 
 
     // code without checking for errors
@@ -153,15 +152,18 @@ int main() {
     glBindVertexArray(sphereVAO);
     // create vertex buffer object from 'vertices[]' and 'indices[]'
     std::vector<float> sphereVertices = mysphere.get_vertices();
-    std::vector<int> sphereIndices = mysphere.get_indices();
+    std::vector<unsigned int> sphereIndices = mysphere.get_indices();
     std::cout << sphereIndices.at(0) << ", " << sphereIndices.at(1) << ", " << sphereIndices.at(2) << ", " << std::endl;
-    std::cout << sphereVertices.at(3) << ", " << sphereVertices.at(4) << ", " << sphereVertices.at(5) << ", " << std::endl;
-    std::cout << sphereVertices.at(18) << ", " << sphereVertices.at(19) << ", " << sphereVertices.at(20) << ", " << std::endl;
-    std::cout << sphereVertices.at(21) << ", " << sphereVertices.at(22) << ", " << sphereVertices.at(23) << ", " << std::endl;
+    for (int i = 0; i < sphereVertices.size()-3; i+=3)
+    {
+        std::cout << "(" << sphereVertices.at(i) << ", " << sphereVertices.at(i+1) << ", " << sphereVertices.at(i+2) << ")" << std::endl;
+    }
     glBindBuffer(GL_ARRAY_BUFFER, sphereVBO);
-    glBufferData(GL_ARRAY_BUFFER, sphereVertices.size(), sphereVertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(float), sphereVertices.data(), GL_STATIC_DRAW);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(verticesSphere), verticesSphere, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereIndices.size(), sphereIndices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereIndices.size() * sizeof(unsigned int), sphereIndices.data(), GL_STATIC_DRAW);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesSphere), indicesSphere, GL_STATIC_DRAW);
     // set the vertex attribute pointers
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -314,8 +316,8 @@ int main() {
         lightingShader.setMat4("model", glm::value_ptr(model));
 
         // render the cube
-        glBindVertexArray(cubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // glBindVertexArray(cubeVAO);
+        // glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // also draw the lamp object
         lightCubeShader.use();
