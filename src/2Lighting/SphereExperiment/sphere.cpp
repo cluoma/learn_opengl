@@ -129,18 +129,23 @@ std::vector<float> Sphere::get_vertex_attribs()
     std::vector<float> a_;
     for (int i = 0; i < i_.size(); i+=3)
     {
+        printf("i: %u\n", i);
         // normals
         glm::vec3 norm = glm::triangleNormal(
-            glm::vec3(v_.at(i*3), v_.at(i*3+1), v_.at(i*3+2)),
-            glm::vec3(v_.at((i+1)*3), v_.at((i+1)*3+1), v_.at((i+1)*3+2)),
-            glm::vec3(v_.at((i+2)*3), v_.at((i+2)*3+1), v_.at((i+2)*3+2))
+            glm::vec3(v_.at(i_.at(i)*3), v_.at(i_.at(i)*3+1), v_.at(i_.at(i)*3+2)),
+            glm::vec3(v_.at(i_.at((i+1))*3), v_.at(i_.at(i+1)*3+1), v_.at(i_.at(i+1)*3+2)),
+            glm::vec3(v_.at(i_.at((i+2))*3), v_.at(i_.at(i+2)*3+1), v_.at(i_.at(i+2)*3+2))
             );
+        if (i % 2 == 0)
+        {
+            norm = (-1.0f) * norm;
+        }
         for (int j = 0; j < 3; j++)
         {
             // position
-            a_.push_back(v_.at((i+j)*3));
-            a_.push_back(v_.at((i+j)*3+1));
-            a_.push_back(v_.at((i+j)*3+2));
+            a_.push_back(v_.at(i_.at(i+j)*3));
+            a_.push_back(v_.at(i_.at(i+j)*3+1));
+            a_.push_back(v_.at(i_.at(i+j)*3+2));
             // normal
             a_.push_back(norm.x);
             a_.push_back(norm.y);

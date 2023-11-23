@@ -69,7 +69,7 @@ glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 int main() {
 
-    Sphere mysphere(100, 100);
+    Sphere mysphere(50, 50);
 
 
     // code without checking for errors
@@ -143,30 +143,47 @@ int main() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    // ---------------------------
     // try to add the sphere
+    // unsigned int sphereVAO, sphereVBO, sphereEBO;
+    // glGenVertexArrays(1, &sphereVAO);
+    // glGenBuffers(1, &sphereVBO);
+    // glGenBuffers(1, &sphereEBO);
+    // // bind VAO
+    // glBindVertexArray(sphereVAO);
+    // // create vertex buffer object from 'vertices[]' and 'indices[]'
+    // std::vector<float> sphereVertices = mysphere.get_vertices();
+    // std::vector<unsigned int> sphereIndices = mysphere.get_indices();
+    // // std::cout << sphereIndices.at(0) << ", " << sphereIndices.at(1) << ", " << sphereIndices.at(2) << ", " << std::endl;
+    // for (int i = 0; i < sphereVertices.size()-3; i+=3)
+    // {
+    //     std::cout << "(" << sphereVertices.at(i) << ", " << sphereVertices.at(i+1) << ", " << sphereVertices.at(i+2) << ")" << std::endl;
+    // }
+    // glBindBuffer(GL_ARRAY_BUFFER, sphereVBO);
+    // glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(float), sphereVertices.data(), GL_STATIC_DRAW);
+    // // glBufferData(GL_ARRAY_BUFFER, sizeof(verticesSphere), verticesSphere, GL_STATIC_DRAW);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereEBO);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereIndices.size() * sizeof(unsigned int), sphereIndices.data(), GL_STATIC_DRAW);
+    // // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesSphere), indicesSphere, GL_STATIC_DRAW);
+    // // set the vertex attribute pointers
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // glEnableVertexAttribArray(0);
+    // -------------------------------
     unsigned int sphereVAO, sphereVBO, sphereEBO;
     glGenVertexArrays(1, &sphereVAO);
     glGenBuffers(1, &sphereVBO);
-    glGenBuffers(1, &sphereEBO);
     // bind VAO
     glBindVertexArray(sphereVAO);
     // create vertex buffer object from 'vertices[]' and 'indices[]'
-    std::vector<float> sphereVertices = mysphere.get_vertices();
-    std::vector<unsigned int> sphereIndices = mysphere.get_indices();
-    std::cout << sphereIndices.at(0) << ", " << sphereIndices.at(1) << ", " << sphereIndices.at(2) << ", " << std::endl;
-    for (int i = 0; i < sphereVertices.size()-3; i+=3)
-    {
-        std::cout << "(" << sphereVertices.at(i) << ", " << sphereVertices.at(i+1) << ", " << sphereVertices.at(i+2) << ")" << std::endl;
-    }
+    std::vector<float> sphereVertices = mysphere.get_vertex_attribs();
     glBindBuffer(GL_ARRAY_BUFFER, sphereVBO);
     glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(float), sphereVertices.data(), GL_STATIC_DRAW);
     // glBufferData(GL_ARRAY_BUFFER, sizeof(verticesSphere), verticesSphere, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereIndices.size() * sizeof(unsigned int), sphereIndices.data(), GL_STATIC_DRAW);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesSphere), indicesSphere, GL_STATIC_DRAW);
     // set the vertex attribute pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // don't forget to use the corresponding shader program first (to set the uniform)
     lightingShader.use();
@@ -338,13 +355,16 @@ int main() {
         glBindVertexArray(lightCubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        lightCubeShader.use();
+        //lightCubeShader.use();
+        lightingShader.use();
         model = glm::mat4(1.0f);
         model = glm::translate(model, lightPos);
-        model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
-        lightCubeShader.setMat4("model", glm::value_ptr(model));
+        model = glm::translate(model, glm::vec3(2.0f, -2.0f, 0.0f));
+        // lightCubeShader.setMat4("model", glm::value_ptr(model));
+        lightingShader.setMat4("model", glm::value_ptr(model));
         glBindVertexArray(sphereVAO);
-        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, sphereVertices.size()/2);
+        //glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
 
         SDL_GL_SwapWindow(Window);
     }
