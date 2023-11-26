@@ -69,7 +69,7 @@ glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 int main() {
 
-    Sphere mysphere(50, 50);
+    Sphere mysphere(500, 500);
 
 
     // code without checking for errors
@@ -333,8 +333,8 @@ int main() {
         lightingShader.setMat4("model", glm::value_ptr(model));
 
         // render the cube
-        // glBindVertexArray(cubeVAO);
-        // glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // also draw the lamp object
         lightCubeShader.use();
@@ -360,8 +360,19 @@ int main() {
         model = glm::mat4(1.0f);
         model = glm::translate(model, lightPos);
         model = glm::translate(model, glm::vec3(2.0f, -2.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f));
         // lightCubeShader.setMat4("model", glm::value_ptr(model));
         lightingShader.setMat4("model", glm::value_ptr(model));
+        // green rubber cube
+        lightingShader.setVec3("material.ambient", 0.05f, 0.05f, 0.05f);
+        lightingShader.setVec3("material.diffuse", 0.8f, 0.2f, 0.2f);
+        lightingShader.setVec3("material.specular", 1.0f, 1.0f, 1.0f);
+        lightingShader.setFloat("material.shininess", 24);
+        // light properties
+        lightingShader.setVec3("light.position", lightPos.x, lightPos.y, lightPos.z);
+        lightingShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        lightingShader.setVec3("light.diffuse", 0.8f, 0.8f, 0.8f);
+        lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
         glBindVertexArray(sphereVAO);
         glDrawArrays(GL_TRIANGLES, 0, sphereVertices.size()/2);
         //glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
