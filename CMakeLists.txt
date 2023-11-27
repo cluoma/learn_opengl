@@ -66,4 +66,7 @@ add_executable(sphere_experiment src/2Lighting/SphereExperiment/sphereExperiemt.
         src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(sphere_experiment ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
-
+# Lighting Maps
+add_executable(lighting_maps src/2Lighting/LightingMaps/lightingMaps.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(lighting_maps ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
