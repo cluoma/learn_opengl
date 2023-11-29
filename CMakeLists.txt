@@ -70,3 +70,7 @@ target_link_libraries(sphere_experiment ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(lighting_maps src/2Lighting/LightingMaps/lightingMaps.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(lighting_maps ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Light Casters
+add_executable(light_casters src/2Lighting/LightCasters/lightCasters.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(light_casters ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
