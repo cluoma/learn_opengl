@@ -74,3 +74,11 @@ target_link_libraries(lighting_maps ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(light_casters src/2Lighting/LightCasters/lightCasters.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(light_casters ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Spotlight
+add_executable(spotlight src/2Lighting/Spolight/spotlight.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(spotlight ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Multiple Light Sources
+add_executable(multiple_light_sources src/2Lighting/MultipleLightSources/multipleLightSources.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(multiple_light_sources ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
