@@ -3,9 +3,28 @@ project(learnOGL)
 
 set(CMAKE_CXX_STANDARD 23)
 
-include_directories(include .)
+include_directories(include . ./src/imgui ./src/imgui/backends ./src/imgui/misc/cpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+set(IMGUI_SOURCES
+        src/imgui/imconfig.h
+        src/imgui/imgui.cpp
+        src/imgui/imgui.h
+        src/imgui/imgui_demo.cpp
+        src/imgui/imgui_draw.cpp
+        src/imgui/imgui_internal.h
+        src/imgui/imgui_tables.cpp
+        src/imgui/imgui_widgets.cpp
+        src/imgui/imstb_rectpack.h
+        src/imgui/imstb_textedit.h
+        src/imgui/imstb_truetype.h
+        src/imgui/backends/imgui_impl_opengl3.cpp
+        src/imgui/backends/imgui_impl_opengl3.h
+        src/imgui/backends/imgui_impl_sdl2.cpp
+        src/imgui/backends/imgui_impl_sdl2.h
+        src/imgui/misc/cpp/imgui_stdlib.cpp
+        src/imgui/misc/cpp/imgui_stdlib.h
+)
 
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
@@ -82,3 +101,8 @@ target_link_libraries(spotlight ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(multiple_light_sources src/2Lighting/MultipleLightSources/multipleLightSources.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(multiple_light_sources ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Multiple Light Sources ImGUI
+add_executable(multiple_light_sources_imgui src/2Lighting/MultipleLightSourcesImgui/multipleLightSourcesImgui.cpp
+        src/glad.c src/shader.h src/camera.h src/stb_image.cpp
+        ${IMGUI_SOURCES})
+target_link_libraries(multiple_light_sources_imgui ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
