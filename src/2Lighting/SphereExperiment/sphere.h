@@ -17,7 +17,7 @@ public:
     // build a dense array of position and normals
     // p1.x, p1.y, p1.z, n1.x, n1.y, n1.z,
     // p2.x, ...
-    std::vector<float> get_vertex_attribs();
+    std::vector<float> get_vertex_attribs(bool smoothNormals);
 
 private:
     int latSegs_;

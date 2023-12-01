@@ -137,7 +137,7 @@ const std::vector<unsigned int> & Sphere::get_indices()
     return i_;
 }
 
-std::vector<float> Sphere::get_vertex_attribs()
+std::vector<float> Sphere::get_vertex_attribs(bool smoothNormals)
 {
     std::vector<float> a_;
     for (int i = 0; i < i_.size(); i+=3)
@@ -172,9 +172,22 @@ std::vector<float> Sphere::get_vertex_attribs()
             a_.push_back(v_.at(i_.at(i+j)*3+1));
             a_.push_back(v_.at(i_.at(i+j)*3+2));
             // normal
-            a_.push_back(norm.x);
-            a_.push_back(norm.y);
-            a_.push_back(norm.z);
+            if (smoothNormals)
+            {
+                glm::vec3 nn = glm::normalize(glm::vec3(
+                v_.at(i_.at(i+j)*3),
+                v_.at(i_.at(i+j)*3+1),
+                v_.at(i_.at(i+j)*3+2)));
+                a_.push_back(nn.x);
+                a_.push_back(nn.y);
+                a_.push_back(nn.z);
+            }
+            else
+            {
+                a_.push_back(norm.x);
+                a_.push_back(norm.y);
+                a_.push_back(norm.z);
+            }
         }
     }
     return a_;

@@ -175,7 +175,7 @@ int main() {
     // bind VAO
     glBindVertexArray(sphereVAO);
     // create vertex buffer object from 'vertices[]' and 'indices[]'
-    std::vector<float> sphereVertices = mysphere.get_vertex_attribs();
+    std::vector<float> sphereVertices = mysphere.get_vertex_attribs(true);
     glBindBuffer(GL_ARRAY_BUFFER, sphereVBO);
     glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(float), sphereVertices.data(), GL_STATIC_DRAW);
     // glBufferData(GL_ARRAY_BUFFER, sizeof(verticesSphere), verticesSphere, GL_STATIC_DRAW);
