@@ -104,5 +104,15 @@ target_link_libraries(multiple_light_sources ${SDL2_LIBRARIES} ${OPENGL_LIBRARIE
 # Multiple Light Sources ImGUI
 add_executable(multiple_light_sources_imgui src/2Lighting/MultipleLightSourcesImgui/multipleLightSourcesImgui.cpp
         src/glad.c src/shader.h src/camera.h src/stb_image.cpp
-        ${IMGUI_SOURCES})
+        ${IMGUI_SOURCES}
+        src/Mesh.cpp src/Mesh.h src/Model.cpp src/Model.h)
 target_link_libraries(multiple_light_sources_imgui ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+
+########################################
+## 3. Models
+########################################
+# Models
+add_executable(models src/3Models/Models/models.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp
+        src/Mesh.cpp src/Mesh.h src/Model.h src/Model.cpp)
+target_link_libraries(models ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} assimp)
