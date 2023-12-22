@@ -116,3 +116,11 @@ add_executable(models src/3Models/Models/models.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp
         src/Mesh.cpp src/Mesh.h src/Model.h src/Model.cpp)
 target_link_libraries(models ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} assimp)
+
+########################################
+## 4. Advanced OpenGL
+########################################
+# Depth Testing
+add_executable(depth_testing src/4AdvancedOpenGL/DepthTesting/depthTesting.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(depth_testing ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
