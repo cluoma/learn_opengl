@@ -133,3 +133,8 @@ target_link_libraries(desk_model ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} assimp)
 add_executable(depth_testing src/4AdvancedOpenGL/DepthTesting/depthTesting.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(depth_testing ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Stencile Testing
+add_executable(stencil_testing src/4AdvancedOpenGL/StencilTesting/stencilTesting.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(stencil_testing ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+
