@@ -64,6 +64,7 @@ add_executable(camera src/1GettingStarted/Camera/camera.cpp src/glad.c
         src/shader.h src/stb_image.cpp)
 target_link_libraries(camera ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 
+
 ########################################
 ## 2. Lighting
 ########################################
@@ -108,6 +109,7 @@ add_executable(multiple_light_sources_imgui src/2Lighting/MultipleLightSourcesIm
         src/Mesh.cpp src/Mesh.h src/Model.cpp src/Model.h)
 target_link_libraries(multiple_light_sources_imgui ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 
+
 ########################################
 ## 3. Models
 ########################################
@@ -116,6 +118,13 @@ add_executable(models src/3Models/Models/models.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp
         src/Mesh.cpp src/Mesh.h src/Model.h src/Model.cpp)
 target_link_libraries(models ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} assimp)
+# Desk Models
+add_executable(desk_model src/3Models/DeskModel/models.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp
+        src/Mesh.cpp src/Mesh.h src/Model.h src/Model.cpp
+        src/3Models/DeskModel/LightCube.cpp src/3Models/DeskModel/LightCube.h)
+target_link_libraries(desk_model ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} assimp)
+
 
 ########################################
 ## 4. Advanced OpenGL
