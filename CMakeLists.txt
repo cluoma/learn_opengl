@@ -137,4 +137,12 @@ target_link_libraries(depth_testing ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(stencil_testing src/4AdvancedOpenGL/StencilTesting/stencilTesting.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(stencil_testing ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Blending Alpha Discard
+add_executable(blending_alpha_discard src/4AdvancedOpenGL/Blending/blendingAlphaDiscard.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(blending_alpha_discard ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Blending Alpha
+add_executable(blending_alpha src/4AdvancedOpenGL/Blending/blendingAlpha.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(blending_alpha ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 
