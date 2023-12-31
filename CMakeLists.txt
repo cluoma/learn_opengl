@@ -145,4 +145,8 @@ target_link_libraries(blending_alpha_discard ${SDL2_LIBRARIES} ${OPENGL_LIBRARIE
 add_executable(blending_alpha src/4AdvancedOpenGL/Blending/blendingAlpha.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(blending_alpha ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Face Culling
+add_executable(face_culling src/4AdvancedOpenGL/FaceCulling/faceCulling.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(face_culling ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 
