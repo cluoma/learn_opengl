@@ -114,6 +114,15 @@ public:
             Zoom = 45.0f;
     }
 
+    void rotate180Degrees() {
+        Yaw += 180.0f;
+        updateCameraVectors();
+    }
+    void reversePitch() {
+        Pitch *= -1.0f;
+        updateCameraVectors();
+    }
+
 private:
     // calculates the front vector from the Camera's (updated) Euler Angles
     void updateCameraVectors()

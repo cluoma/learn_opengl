@@ -107,7 +107,7 @@ add_executable(multiple_light_sources_imgui src/2Lighting/MultipleLightSourcesIm
         src/glad.c src/shader.h src/camera.h src/stb_image.cpp
         ${IMGUI_SOURCES}
         src/Mesh.cpp src/Mesh.h src/Model.cpp src/Model.h)
-target_link_libraries(multiple_light_sources_imgui ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(multiple_light_sources_imgui ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} assimp)
 
 
 ########################################
@@ -149,4 +149,8 @@ target_link_libraries(blending_alpha ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(face_culling src/4AdvancedOpenGL/FaceCulling/faceCulling.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(face_culling ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Framebuffers
+add_executable(framebuffers src/4AdvancedOpenGL/Framebuffers/framebuffers.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(framebuffers ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 
