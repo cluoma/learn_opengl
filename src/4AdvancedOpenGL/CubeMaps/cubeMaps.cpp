@@ -168,7 +168,7 @@ int main() {
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     // enable z-buffer
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS); // always pass the depth test (same effect as glDisable(GL_DEPTH_TEST))
+    glDepthFunc(GL_LEQUAL); // always pass the depth test (same effect as glDisable(GL_DEPTH_TEST))
 
     // compile shaders
     Shader lightingShader("src/4AdvancedOpenGL/CubeMaps/colors.vert", "src/4AdvancedOpenGL/CubeMaps/colors.frag");
@@ -323,22 +323,10 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // skybox
-        glDepthMask(GL_FALSE);
-        cubeMapShader.use();
-        glm::mat4 view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
-        cubeMapShader.setMat4("view", glm::value_ptr(view));
-        cubeMapShader.setMat4("projection", glm::value_ptr(projection));
-        glBindVertexArray(skyboxVAO);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glDepthMask(GL_TRUE);
-
         lightingShader.use();
         glm::mat4 model = glm::mat4(1.0f);
-        view = camera.GetViewMatrix();
-        projection = glm::perspective(glm::radians(camera.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
         lightingShader.setMat4("view", glm::value_ptr(view));
         lightingShader.setMat4("projection", glm::value_ptr(projection));
         // cubes
@@ -360,6 +348,18 @@ int main() {
         lightingShader.setMat4("model", glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
+
+        // skybox
+        //glDepthMask(GL_FALSE);
+        cubeMapShader.use();
+        view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
+        projection = glm::perspective(glm::radians(camera.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+        cubeMapShader.setMat4("view", glm::value_ptr(view));
+        cubeMapShader.setMat4("projection", glm::value_ptr(projection));
+        glBindVertexArray(skyboxVAO);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        //glDepthMask(GL_TRUE);
 
         SDL_GL_SwapWindow(Window);
     }
