@@ -153,4 +153,8 @@ target_link_libraries(face_culling ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(framebuffers src/4AdvancedOpenGL/Framebuffers/framebuffers.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(framebuffers ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Cube Maps
+add_executable(cube_maps src/4AdvancedOpenGL/CubeMaps/cubeMaps.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(cube_maps ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 
