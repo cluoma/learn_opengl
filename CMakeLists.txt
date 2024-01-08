@@ -157,4 +157,8 @@ target_link_libraries(framebuffers ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(cube_maps src/4AdvancedOpenGL/CubeMaps/cubeMaps.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(cube_maps ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Cube Maps Reflections
+add_executable(cube_maps_reflections src/4AdvancedOpenGL/CubeMapsReflections/cubeMapsReflections.cpp src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp)
+target_link_libraries(cube_maps_reflections ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 
