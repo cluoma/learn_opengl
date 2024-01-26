@@ -161,4 +161,10 @@ target_link_libraries(cube_maps ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
 add_executable(cube_maps_reflections src/4AdvancedOpenGL/CubeMapsReflections/cubeMapsReflections.cpp src/glad.c
         src/shader.h src/camera.h src/stb_image.cpp)
 target_link_libraries(cube_maps_reflections ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES})
+# Geometry Shader
+add_executable(exploding_spongebob src/4AdvancedOpenGL/GeometryShader/explodingSpongebob.cpp
+        src/glad.c
+        src/shader.h src/camera.h src/stb_image.cpp
+        src/Mesh.cpp src/Mesh.h src/Model.h src/Model.cpp)
+target_link_libraries(exploding_spongebob ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} assimp)
 

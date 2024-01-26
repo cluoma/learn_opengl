@@ -63,10 +63,16 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
         vertex.Position = tmpVector;
 
         // normal vectors
-        tmpVector.x = mesh->mNormals[i].x;
-        tmpVector.y = mesh->mNormals[i].y;
-        tmpVector.z = mesh->mNormals[i].z;
-        vertex.Normal = tmpVector;
+        if (mesh->mNormals == nullptr)
+        {
+            //std::cout << "ERROR::MODEL::processMesh::mesh->mNormals == nullptr" << std::endl;
+            //exit(1);
+        } else {
+            tmpVector.x = mesh->mNormals[i].x;
+            tmpVector.y = mesh->mNormals[i].y;
+            tmpVector.z = mesh->mNormals[i].z;
+            vertex.Normal = tmpVector;
+        }
 
         // texture coords
         if (mesh->mTextureCoords[0])
